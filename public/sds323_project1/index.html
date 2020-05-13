@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Samuel Higgins" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>SDS 323 Project</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/sds323_project1/">SDS 323 Project</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<div id="abstract" class="section level2">
+<h2>Abstract</h2>
+<div id="for-this-project-i-wanted-to-look-at-covid-19-cases-over-time-for-a-few-texas-counties-and-compare-them-through-data-visualization.-i-wanted-to-know-which-counties-are-experiencing-a-high-number-of-cases-and-which-counties-are-experiencing-a-low-number-of-cases.-cases-are-ultimately-dependent-on-the-number-of-testing-thats-done.-what-i-found-was-that-some-counties-are-not-on-the-same-page-in-terms-of-cases-reported.-bexar-county-for-example-started-recording-cases-early-february-while-other-counties-like-zapata-county-started-recording-cases-early-april.-there-are-potential-factors-that-may-explain-this-such-as-a-lack-of-testing-kits-due-to-a-delay-or-in-the-case-of-san-antonio-the-early-exposure-to-the-virus." class="section level4">
+<h4>For this project, I wanted to look at Covid-19 cases over time for a few Texas counties and compare them through data visualization. I wanted to know which counties are experiencing a high number of cases and which counties are experiencing a low number of cases. Cases are ultimately dependent on the number of testing that’s done. What I found was that some counties are not on the same page in terms of cases reported. Bexar county for example started recording cases early February, while other counties, like Zapata county, started recording cases early April. There are potential factors that may explain this, such as a lack of testing kits due to a delay or, in the case of San Antonio, the early exposure to the virus.</h4>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.2.1     v purrr   0.3.3
+## v tibble  2.1.3     v dplyr   0.8.3
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>cvd &lt;- read.csv(&quot;https://github.com/zhamuelh/samprojects2/raw/master/Data%20sets/counties_covid19.csv&quot;)
+head(cvd)</code></pre>
+<pre><code>##         date    county      state  fips cases deaths
+## 1 2020-01-21 Snohomish Washington 53061     1      0
+## 2 2020-01-22 Snohomish Washington 53061     1      0
+## 3 2020-01-23 Snohomish Washington 53061     1      0
+## 4 2020-01-24      Cook   Illinois 17031     1      0
+## 5 2020-01-24 Snohomish Washington 53061     1      0
+## 6 2020-01-25    Orange California  6059     1      0</code></pre>
+<pre class="r"><code>txcv &lt;- cvd %&gt;% 
+  filter(state == &quot;Texas&quot;) %&gt;% pivot_wider(names_from = state, values_from = county) %&gt;%
+  rename(county_tx = Texas)
+head(txcv)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   date        fips cases deaths county_tx
+##   &lt;fct&gt;      &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;fct&gt;    
+## 1 2020-02-12 48029     1      0 Bexar    
+## 2 2020-02-13 48029     2      0 Bexar    
+## 3 2020-02-14 48029     2      0 Bexar    
+## 4 2020-02-15 48029     2      0 Bexar    
+## 5 2020-02-16 48029     2      0 Bexar    
+## 6 2020-02-17 48029     2      0 Bexar</code></pre>
+<pre class="r"><code>tail(txcv)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   date        fips cases deaths county_tx
+##   &lt;fct&gt;      &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;fct&gt;    
+## 1 2020-05-05 48497    27      2 Wise     
+## 2 2020-05-05 48499    11      0 Wood     
+## 3 2020-05-05 48501     2      0 Yoakum   
+## 4 2020-05-05 48503     4      1 Young    
+## 5 2020-05-05 48505     7      0 Zapata   
+## 6 2020-05-05 48507     1      0 Zavala</code></pre>
+<div id="i-guess-you-could-say-my-question-for-this-analysis-is-essentially-hows-everybody-doing-in-regards-to-the-current-pandemic-in-texas.-i-will-mainly-look-at-covid-19-cases-over-time-and-mortality-over-time-for-a-few-counties.-this-study-could-potentially-be-a-good-precursor-to-future-studies.-one-such-study-could-be-evaluating-changes-in-certain-populations-throughout-the-duration-of-the-pandemic.-another-future-study-could-look-at-predicting-the-rate-of-covid-19-spread-on-variables-like-population-density-and-the-number-of-open-grocery-stores-in-a-city." class="section level4">
+<h4>I guess you could say my question for this analysis is essentially “how’s everybody doing” in regards to the current pandemic in Texas. I will mainly look at Covid-19 cases over time and mortality over time for a few counties. This study could potentially be a good precursor to future studies. One such study could be evaluating changes in certain populations throughout the duration of the pandemic. Another future study could look at predicting the rate of Covid-19 spread on variables like population density and the number of open grocery stores in a city.</h4>
+</div>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="for-this-project-i-imported-two-data-sets.-the-first-data-set-annotated-as-cvd-in-the-introduction-chunk-contains-the-number-of-covid-19-cases-and-deaths-over-time-at-the-county-level-in-the-u.s.-this-data-was-released-publicly-on-the-new-york-times-github-account.-the-second-data-set-annnotated-as-txp-contains-population-data-for-each-texas-county-as-well-as-variables-for-the-number-of-people-in-poverty-and-median-income-for-that-county.-this-data-set-was-compiled-from-data-obtained-from-the-u.s-census-bureau.-i-tidyed-the-cvd-set-to-only-display-texas-data-at-the-county-level-txcv.-later-i-joined-a-summarised-version-of-txcv-txcv_cases-to-txp-to-obtain-a-table-txcv2-that-displays-summarised-information-on-covid-19-cases-and-deaths-for-each-county-which-will-be-outdated-as-the-days-progress.-with-txcv-i-created-time-series-plots-for-a-few-counties-visualizing-covid-19-cases-and-deaths-over-time.-txcv2-was-created-as-a-summary-table-table-1-but-also-to-calculate-incidence-for-each-county." class="section level4">
+<h4>For this project, I imported two data sets. The first data set (annotated as cvd in the introduction chunk) contains the number of Covid-19 cases and deaths over time at the county level in the U.S. This data was released publicly on the New York Times’ GitHub account. The second data set (annnotated as txp) contains population data for each Texas county as well as variables for the number of people in poverty and median income for that county. This data set was compiled from data obtained from the U.S Census Bureau. I tidyed the ‘cvd’ set to only display Texas data at the county level (txcv). Later I joined a summarised version of ‘txcv’ (txcv_cases) to ‘txp’ to obtain a table (txcv2) that displays summarised information on Covid-19 cases and deaths for each county (which will be outdated as the days progress). With ‘txcv’ I created time series plots for a few counties visualizing Covid-19 cases and deaths over time. ‘Txcv2’ was created as a summary table (Table 1), but also to calculate incidence for each county.</h4>
+</div>
+</div>
+<div id="time-series-data-visualization-texas-counties" class="section level2">
+<h2>Time Series Data Visualization: Texas Counties</h2>
+<pre class="r"><code>txcv$date &lt;- as.Date(txcv$date)
+
+# Time series plot for Travis, El Paso, Bexar, Dallas Counties
+txcv %&gt;% filter(county_tx == c(&quot;Travis&quot;, &quot;El Paso&quot;, &quot;Bexar&quot;, &quot;Dallas&quot;)) %&gt;% 
+  ggplot(aes(x = date, y = cases )) +
+  geom_line(aes(color = county_tx)) +
+  geom_point(aes(color = county_tx),na.rm = T) +
+  facet_grid(&quot;county_tx&quot;) +
+  theme(legend.position = &quot;none&quot;) +
+  ggtitle(&quot;Figure 1. Texas: Covid-19 Cases Feb 12 - May 5, 2020 &quot;) +
+  scale_colour_viridis_d()</code></pre>
+<p><img src="/SDS323_Project1_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>#...for Zapata County
+txcv %&gt;% filter(county_tx == &quot;Zapata&quot;) %&gt;%
+  ggplot(aes(x = date, y = cases)) +
+  geom_line() + geom_point() +
+  ggtitle(&quot;Figure 2. Zapata County Covid-19 Cases Apr 6 - May 5, 2020&quot;)</code></pre>
+<p><img src="/SDS323_Project1_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>#...for Harris County
+txcv %&gt;% filter(county_tx == &quot;Harris&quot;) %&gt;%
+  ggplot(aes(x = date, y = cases)) +
+  geom_line() + geom_point() +
+  ggtitle(&quot;Figure 3. Harris County Covid-19 Cases Mar 5 - May 5, 2020&quot;)</code></pre>
+<p><img src="/SDS323_Project1_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
+<pre class="r"><code># Covid-19 Mortality over time
+txcv %&gt;% filter(county_tx == c(&quot;Travis&quot;, &quot;El Paso&quot;, &quot;Bexar&quot;, &quot;Dallas&quot;)) %&gt;%
+  ggplot(aes(x = date, y = deaths)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  facet_grid(&quot;county_tx&quot;) + stat_smooth(color = &quot;orange&quot;) +
+  ggtitle(&quot;Figure 4. Texas: Covid-19 Mortality Feb 12 - May 5, 2020&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/SDS323_Project1_files/figure-html/unnamed-chunk-2-4.png" width="672" /></p>
+<pre class="r"><code># Harris County
+txcv %&gt;% filter(county_tx == &quot;Harris&quot;) %&gt;%
+  ggplot(aes(x = date, y = deaths)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  stat_smooth(color = &quot;orange&quot;) +
+  ggtitle(&quot;Figure 5. Harris County Mortality Mar 19 - May 5, 2020&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/SDS323_Project1_files/figure-html/unnamed-chunk-2-5.png" width="672" /></p>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<div id="figure-1-is-a-time-series-plot-of-covid-19-cases-over-time-faceted-by-county.-here-we-see-that-bexar-county-starts-recording-cases-februaruy-12th-and-as-of-may-5th-had-a-case-count-of-1689.-dallas-el-paso-and-travis-record-cases-on-the-14th-16th-and-17th-of-march-respectively.-as-of-may-5th-dallas-had-4623-cases-el-paso-had-1080-cases-and-travis-had-1876-cases-of-the-coronavirus.-highlighted-in-figure-3-harris-county-which-contains-the-houston-metropolis-had-the-highest-number-of-recorded-cases-on-may-5th-at-7128-cases.-figure-2-displays-zapata-county-which-recorded-its-first-case-april-6th-and-had-7-cases-on-may-5th-more-about-zapata-county-will-be-discussed-in-the-conclusion." class="section level4">
+<h4>Figure 1 is a time series plot of Covid-19 cases over time, faceted by county. Here we see that Bexar county starts recording cases Februaruy 12th, and as of May 5th had a case count of 1689. Dallas, El Paso, and Travis record cases on the 14th, 16th, and 17th of March, respectively. As of May 5th, Dallas had 4623 cases, El Paso had 1080 cases, and Travis had 1876 cases of the coronavirus. Highlighted in Figure 3, Harris county, which contains the Houston metropolis, had the highest number of recorded cases on May 5th at 7128 cases. Figure 2 displays Zapata county, which recorded its first case April 6th, and had 7 cases on May 5th (more about Zapata county will be discussed in the conclusion).</h4>
+</div>
+<div id="figure-4-is-a-time-series-plot-of-deaths-over-time-for-the-counties-displayed-in-figure-1.-on-may-5th-travis-had-58-covid-19-related-deaths-el-paso-had-22-bexar-had-52-and-dallas-had-121.-like-with-the-number-of-cases-harris-county-also-had-the-highest-number-of-deaths-at-144-as-of-may-5th." class="section level4">
+<h4>Figure 4 is a time series plot of deaths over time for the counties displayed in Figure 1. On May 5th, Travis had 58 Covid-19 related deaths, El Paso had 22, Bexar had 52, and Dallas had 121. Like with the number of cases, Harris county also had the highest number of deaths, at 144 as of May 5th.</h4>
+</div>
+</div>
+<div id="slopes-for-plots" class="section level2">
+<h2>Slopes for plots</h2>
+<pre class="r"><code>tx_trav &lt;- txcv %&gt;% filter(county_tx == &quot;Travis&quot;)
+lm1 &lt;- lm(cases ~ date, data = tx_trav)
+summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cases ~ date, data = tx_trav)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -185.90 -112.21   10.94   75.47  304.72 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -7.053e+05  1.902e+04  -37.09   &lt;2e-16 ***
+## date         3.845e+01  1.036e+00   37.12   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 118.6 on 52 degrees of freedom
+## Multiple R-squared:  0.9636, Adjusted R-squared:  0.9629 
+## F-statistic:  1378 on 1 and 52 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>tx_elp &lt;- txcv %&gt;% filter(county_tx == &quot;El Paso&quot;)
+lm2 &lt;- lm(cases ~ date, data = tx_elp)
+summary(lm2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cases ~ date, data = tx_elp)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -175.07 -117.15  -17.81  104.78  232.58 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3.949e+05  1.902e+04  -20.76   &lt;2e-16 ***
+## date         2.152e+01  1.036e+00   20.78   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 118.6 on 52 degrees of freedom
+## Multiple R-squared:  0.8925, Adjusted R-squared:  0.8904 
+## F-statistic: 431.8 on 1 and 52 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>tx_bex &lt;- txcv %&gt;% filter(county_tx == &quot;Bexar&quot;)
+lm3 &lt;- lm(cases ~ date, data = tx_bex)
+summary(lm3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cases ~ date, data = tx_bex)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -370.25 -221.46    4.35  198.15  454.52 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3.600e+05  2.015e+04  -17.86   &lt;2e-16 ***
+## date         1.964e+01  1.099e+00   17.88   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 244.1 on 82 degrees of freedom
+## Multiple R-squared:  0.7959, Adjusted R-squared:  0.7934 
+## F-statistic: 319.8 on 1 and 82 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>tx_dal &lt;- txcv %&gt;% filter(county_tx == &quot;Dallas&quot;)
+lm4 &lt;- lm(cases ~ date, data = tx_dal)
+summary(lm4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cases ~ date, data = tx_dal)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -349.68 -243.21  -55.84  123.85  861.81 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1.471e+06  4.628e+04  -31.80   &lt;2e-16 ***
+## date         8.023e+01  2.521e+00   31.83   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 313.1 on 55 degrees of freedom
+## Multiple R-squared:  0.9485, Adjusted R-squared:  0.9476 
+## F-statistic:  1013 on 1 and 55 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>tx_har &lt;- txcv %&gt;% filter(county_tx == &quot;Harris&quot;)
+lm5 &lt;- lm(cases ~ date, data = tx_har)
+summary(lm5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cases ~ date, data = tx_har)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1263.5  -670.1   227.6   423.2  1613.3 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.468e+06  9.841e+04  -25.08   &lt;2e-16 ***
+## date         1.346e+02  5.361e+00   25.10   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 755.4 on 60 degrees of freedom
+## Multiple R-squared:  0.9131, Adjusted R-squared:  0.9116 
+## F-statistic: 630.1 on 1 and 60 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="results-cont." class="section level2">
+<h2>Results (cont.)</h2>
+<div id="in-the-chunk-above-i-computed-the-slopes-for-the-plots-in-the-figures-that-were-discussed-earlier.-for-travis-county-for-every-one-day-covid-19-cases-inreases-by-3.845-on-average.-for-el-paso-county-covid-19-cases-increases-by-2.152-on-averge-every-day.-bexar-county-had-an-average-slope-of-1.964-for-covid-19-cases-per-day.-dallas-county-had-an-average-slope-of-8.023-for-covid-19-cases-per-day.-finally-for-harris-county-covid-19-cases-increases-by-134.6-on-average-for-every-day." class="section level4">
+<h4>In the chunk above, I computed the slopes for the plots in the figures that were discussed earlier. For Travis county, for every (one) day, Covid-19 cases inreases by 3.845 on average. For El Paso county, Covid-19 cases increases by 2.152 on averge, every day. Bexar county, had an average slope of 1.964 for Covid-19 cases per day. Dallas county had an average slope of 8.023 for Covid-19 cases per day. Finally, for Harris county, Covid-19 cases increases by 134.6 on average for every day.</h4>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<div id="to-conclude-most-if-not-all-of-our-metropolitan-counties-are-affected-by-the-covid-19-pandemic-to-some-varying-degree.-harris-county-is-definitely-taking-the-brunt-of-the-pandemic-along-with-dallas-county.-for-our-smaller-counties-there-may-not-be-a-full-picture-as-of-yet.-as-mentioned-previously-zapata-county-has-only-recorded-7-cases-since-april-6th-which-could-be-indicative-of-a-lack-of-testing-or-it-could-just-mean-that-the-disease-is-spreading-a-lot-more-slowly-there.-there-are-counties-that-have-recorded-less-cases-than-zapata-if-you-filter-txcv2-to-where-you-return-the-minimum-number-of-cases-for-a-county-you-will-get-multiple-counties-that-have-only-1-case-recorded.-all-of-these-counties-have-less-than-20000-people-some-less-than-10000.-although-most-of-this-is-just-comparison-i-believe-this-report-can-provide-potential-foresight-for-covid-19-relief-for-our-state." class="section level4">
+<h4>To conclude, most if not all of our “metropolitan counties” are affected by the Covid-19 pandemic to some varying degree. Harris county is definitely taking the brunt of the pandemic, along with Dallas county. For our smaller counties, there may not be a full picture as of yet. As mentioned previously, Zapata county has only recorded 7 cases since April 6th, which could be indicative of a lack of testing, or it could just mean that the disease is spreading a lot more slowly there. There are counties that have recorded less cases than Zapata, if you filter ‘txcv2’ to where you return the minimum number of cases for a county, you will get multiple counties that have only 1 case recorded. All of these counties have less than 20,000 people, some less than 10,000. Although most of this is just comparison, I believe this report can provide potential foresight for Covid-19 relief for our state.</h4>
+</div>
+</div>
+<div id="covid-19-summary-and-population-measures" class="section level2">
+<h2>Covid-19 Summary and Population Measures</h2>
+<pre class="r"><code>txp &lt;- read.csv(&quot;https://github.com/zhamuelh/samprojects2/raw/master/Data%20sets/txcounty_poverty.csv&quot;)
+
+txp &lt;- txp %&gt;% rename(county_tx = County.Name) %&gt;% rename(population_est  = Population.Estimates) %&gt;%
+  rename(n_poverty = Number.in.Poverty) %&gt;% rename(med_income = Median.Household.income) %&gt;% 
+  select(county_tx, population_est, n_poverty, med_income)
+
+txcv_cases &lt;- txcv %&gt;% group_by(county_tx) %&gt;% summarise(current_cases = max(cases), 
+                                                              total_deaths = max(deaths))
+txcv2 &lt;- left_join(txcv_cases, txp, by = &quot;county_tx&quot;)</code></pre>
+<pre><code>## Warning: Column `county_tx` joining factors with different levels, coercing to
+## character vector</code></pre>
+<pre class="r"><code>txcv2 &lt;- txcv2 %&gt;% mutate(incidence = current_cases/population_est) %&gt;% na.omit #Clay County omitted due to NAs
+
+txcv2 %&gt;% filter(current_cases == min(current_cases))</code></pre>
+<pre><code>## # A tibble: 25 x 7
+##    county_tx current_cases total_deaths population_est n_poverty med_income
+##    &lt;chr&gt;             &lt;int&gt;        &lt;int&gt;          &lt;int&gt;     &lt;int&gt;      &lt;int&gt;
+##  1 Bailey                1            0           7256      1087      45051
+##  2 Brewster              1            0           9128      1475      45670
+##  3 Briscoe               1            0           1535       245      44409
+##  4 Brooks                1            0           7242      2183      30116
+##  5 Childress             1            0           7007      1180      42291
+##  6 Cochran               1            0           2931       609      42873
+##  7 Coke                  1            0           3340       469      44804
+##  8 Coleman               1            0           8483      1604      39484
+##  9 Collings~             1            0           2943       502      39536
+## 10 Concho                1            0           2044       702      40987
+## # ... with 15 more rows, and 1 more variable: incidence &lt;dbl&gt;</code></pre>
+<pre class="r"><code>library(kableExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
+<pre class="r"><code>kable(head(txcv2, n = 25), caption = &quot;Table 1. Covid-19 Summary and Population Measures per County&quot;) %&gt;% 
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;condensed&quot;))</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-5">Table 1: </span>Table 1. Covid-19 Summary and Population Measures per County
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+county_tx
+</th>
+<th style="text-align:right;">
+current_cases
+</th>
+<th style="text-align:right;">
+total_deaths
+</th>
+<th style="text-align:right;">
+population_est
+</th>
+<th style="text-align:right;">
+n_poverty
+</th>
+<th style="text-align:right;">
+med_income
+</th>
+<th style="text-align:right;">
+incidence
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anderson
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+58854
+</td>
+<td style="text-align:right;">
+8778
+</td>
+<td style="text-align:right;">
+45969
+</td>
+<td style="text-align:right;">
+0.0005777
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Andrews
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+19232
+</td>
+<td style="text-align:right;">
+1922
+</td>
+<td style="text-align:right;">
+84946
+</td>
+<td style="text-align:right;">
+0.0010919
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Angelina
+</td>
+<td style="text-align:right;">
+79
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+92353
+</td>
+<td style="text-align:right;">
+15052
+</td>
+<td style="text-align:right;">
+46653
+</td>
+<td style="text-align:right;">
+0.0008554
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Aransas
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+23031
+</td>
+<td style="text-align:right;">
+4642
+</td>
+<td style="text-align:right;">
+46912
+</td>
+<td style="text-align:right;">
+0.0000868
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Armstrong
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1949
+</td>
+<td style="text-align:right;">
+197
+</td>
+<td style="text-align:right;">
+57210
+</td>
+<td style="text-align:right;">
+0.0010262
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atascosa
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+50276
+</td>
+<td style="text-align:right;">
+7803
+</td>
+<td style="text-align:right;">
+50594
+</td>
+<td style="text-align:right;">
+0.0003779
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Austin
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+31724
+</td>
+<td style="text-align:right;">
+3031
+</td>
+<td style="text-align:right;">
+59942
+</td>
+<td style="text-align:right;">
+0.0004098
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bailey
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7256
+</td>
+<td style="text-align:right;">
+1087
+</td>
+<td style="text-align:right;">
+45051
+</td>
+<td style="text-align:right;">
+0.0001378
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bandera
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+22874
+</td>
+<td style="text-align:right;">
+3016
+</td>
+<td style="text-align:right;">
+53008
+</td>
+<td style="text-align:right;">
+0.0002623
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bastrop
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+88296
+</td>
+<td style="text-align:right;">
+10673
+</td>
+<td style="text-align:right;">
+61883
+</td>
+<td style="text-align:right;">
+0.0011099
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bee
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+33039
+</td>
+<td style="text-align:right;">
+6607
+</td>
+<td style="text-align:right;">
+41806
+</td>
+<td style="text-align:right;">
+0.0001816
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bell
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+356587
+</td>
+<td style="text-align:right;">
+44865
+</td>
+<td style="text-align:right;">
+54292
+</td>
+<td style="text-align:right;">
+0.0005889
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bexar
+</td>
+<td style="text-align:right;">
+1689
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+1991779
+</td>
+<td style="text-align:right;">
+334215
+</td>
+<td style="text-align:right;">
+54210
+</td>
+<td style="text-align:right;">
+0.0008480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Blanco
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11835
+</td>
+<td style="text-align:right;">
+1176
+</td>
+<td style="text-align:right;">
+64832
+</td>
+<td style="text-align:right;">
+0.0005070
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bosque
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+18882
+</td>
+<td style="text-align:right;">
+2721
+</td>
+<td style="text-align:right;">
+48460
+</td>
+<td style="text-align:right;">
+0.0002648
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bowie
+</td>
+<td style="text-align:right;">
+104
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+97488
+</td>
+<td style="text-align:right;">
+16794
+</td>
+<td style="text-align:right;">
+47339
+</td>
+<td style="text-align:right;">
+0.0010668
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brazoria
+</td>
+<td style="text-align:right;">
+570
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+383058
+</td>
+<td style="text-align:right;">
+36342
+</td>
+<td style="text-align:right;">
+74225
+</td>
+<td style="text-align:right;">
+0.0014880
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brazos
+</td>
+<td style="text-align:right;">
+219
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+228292
+</td>
+<td style="text-align:right;">
+49310
+</td>
+<td style="text-align:right;">
+50113
+</td>
+<td style="text-align:right;">
+0.0009593
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brewster
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+9128
+</td>
+<td style="text-align:right;">
+1475
+</td>
+<td style="text-align:right;">
+45670
+</td>
+<td style="text-align:right;">
+0.0001096
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Briscoe
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1535
+</td>
+<td style="text-align:right;">
+245
+</td>
+<td style="text-align:right;">
+44409
+</td>
+<td style="text-align:right;">
+0.0006515
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brooks
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7242
+</td>
+<td style="text-align:right;">
+2183
+</td>
+<td style="text-align:right;">
+30116
+</td>
+<td style="text-align:right;">
+0.0001381
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brown
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+39470
+</td>
+<td style="text-align:right;">
+4778
+</td>
+<td style="text-align:right;">
+47097
+</td>
+<td style="text-align:right;">
+0.0009628
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Burleson
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+18381
+</td>
+<td style="text-align:right;">
+2686
+</td>
+<td style="text-align:right;">
+53626
+</td>
+<td style="text-align:right;">
+0.0007617
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Burnet
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+48190
+</td>
+<td style="text-align:right;">
+5099
+</td>
+<td style="text-align:right;">
+56696
+</td>
+<td style="text-align:right;">
+0.0004980
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Caldwell
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+42956
+</td>
+<td style="text-align:right;">
+5850
+</td>
+<td style="text-align:right;">
+52588
+</td>
+<td style="text-align:right;">
+0.0005354
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>kable(tail(txcv2, n = 25)) %&gt;% kable_styling(latex_options = c(&quot;striped&quot;, &quot;condensed&quot;))</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+county_tx
+</th>
+<th style="text-align:right;">
+current_cases
+</th>
+<th style="text-align:right;">
+total_deaths
+</th>
+<th style="text-align:right;">
+population_est
+</th>
+<th style="text-align:right;">
+n_poverty
+</th>
+<th style="text-align:right;">
+med_income
+</th>
+<th style="text-align:right;">
+incidence
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Trinity
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+14643
+</td>
+<td style="text-align:right;">
+2581
+</td>
+<td style="text-align:right;">
+40486
+</td>
+<td style="text-align:right;">
+0.0006146
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tyler
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+22474
+</td>
+<td style="text-align:right;">
+3584
+</td>
+<td style="text-align:right;">
+44041
+</td>
+<td style="text-align:right;">
+0.0003115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Upshur
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+40998
+</td>
+<td style="text-align:right;">
+6455
+</td>
+<td style="text-align:right;">
+48554
+</td>
+<td style="text-align:right;">
+0.0003659
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Uvalde
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+27691
+</td>
+<td style="text-align:right;">
+5999
+</td>
+<td style="text-align:right;">
+39725
+</td>
+<td style="text-align:right;">
+0.0002528
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Val Verde
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+50624
+</td>
+<td style="text-align:right;">
+8950
+</td>
+<td style="text-align:right;">
+44276
+</td>
+<td style="text-align:right;">
+0.0002568
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Van Zandt
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+56596
+</td>
+<td style="text-align:right;">
+8598
+</td>
+<td style="text-align:right;">
+51152
+</td>
+<td style="text-align:right;">
+0.0002827
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Victoria
+</td>
+<td style="text-align:right;">
+143
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+92059
+</td>
+<td style="text-align:right;">
+13855
+</td>
+<td style="text-align:right;">
+51646
+</td>
+<td style="text-align:right;">
+0.0015534
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Walker
+</td>
+<td style="text-align:right;">
+298
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+75055
+</td>
+<td style="text-align:right;">
+14525
+</td>
+<td style="text-align:right;">
+43681
+</td>
+<td style="text-align:right;">
+0.0039704
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Waller
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+54349
+</td>
+<td style="text-align:right;">
+7776
+</td>
+<td style="text-align:right;">
+59807
+</td>
+<td style="text-align:right;">
+0.0006072
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington
+</td>
+<td style="text-align:right;">
+147
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+35801
+</td>
+<td style="text-align:right;">
+4566
+</td>
+<td style="text-align:right;">
+54332
+</td>
+<td style="text-align:right;">
+0.0041060
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Webb
+</td>
+<td style="text-align:right;">
+400
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+281964
+</td>
+<td style="text-align:right;">
+69860
+</td>
+<td style="text-align:right;">
+44919
+</td>
+<td style="text-align:right;">
+0.0014186
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wharton
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+41141
+</td>
+<td style="text-align:right;">
+6909
+</td>
+<td style="text-align:right;">
+48040
+</td>
+<td style="text-align:right;">
+0.0009966
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wheeler
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5059
+</td>
+<td style="text-align:right;">
+721
+</td>
+<td style="text-align:right;">
+48018
+</td>
+<td style="text-align:right;">
+0.0021743
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wichita
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+133814
+</td>
+<td style="text-align:right;">
+21221
+</td>
+<td style="text-align:right;">
+47477
+</td>
+<td style="text-align:right;">
+0.0005231
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wilbarger
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12548
+</td>
+<td style="text-align:right;">
+1905
+</td>
+<td style="text-align:right;">
+44735
+</td>
+<td style="text-align:right;">
+0.0000797
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Willacy
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+21475
+</td>
+<td style="text-align:right;">
+6369
+</td>
+<td style="text-align:right;">
+33171
+</td>
+<td style="text-align:right;">
+0.0006054
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Williamson
+</td>
+<td style="text-align:right;">
+333
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+571610
+</td>
+<td style="text-align:right;">
+35829
+</td>
+<td style="text-align:right;">
+87817
+</td>
+<td style="text-align:right;">
+0.0005826
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wilson
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+51077
+</td>
+<td style="text-align:right;">
+5400
+</td>
+<td style="text-align:right;">
+71207
+</td>
+<td style="text-align:right;">
+0.0006657
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winkler
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7696
+</td>
+<td style="text-align:right;">
+1069
+</td>
+<td style="text-align:right;">
+56781
+</td>
+<td style="text-align:right;">
+0.0003898
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wise
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+69647
+</td>
+<td style="text-align:right;">
+6643
+</td>
+<td style="text-align:right;">
+66387
+</td>
+<td style="text-align:right;">
+0.0003877
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wood
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+45229
+</td>
+<td style="text-align:right;">
+6625
+</td>
+<td style="text-align:right;">
+48384
+</td>
+<td style="text-align:right;">
+0.0002432
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yoakum
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+9109
+</td>
+<td style="text-align:right;">
+1028
+</td>
+<td style="text-align:right;">
+61560
+</td>
+<td style="text-align:right;">
+0.0002196
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Young
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+18304
+</td>
+<td style="text-align:right;">
+2468
+</td>
+<td style="text-align:right;">
+49301
+</td>
+<td style="text-align:right;">
+0.0002185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zapata
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+13903
+</td>
+<td style="text-align:right;">
+4529
+</td>
+<td style="text-align:right;">
+33160
+</td>
+<td style="text-align:right;">
+0.0005035
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zavala
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12338
+</td>
+<td style="text-align:right;">
+3701
+</td>
+<td style="text-align:right;">
+30076
+</td>
+<td style="text-align:right;">
+0.0000811
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

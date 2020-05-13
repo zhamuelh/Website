@@ -1,0 +1,452 @@
+---
+title: "Project 2: Modeling, Testing, and Predicting"
+author: "Samuel Higgins"
+date: "4/27/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.2.1     v purrr   0.3.3
+## v tibble  2.1.3     v dplyr   0.8.3
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>liverd &lt;- read.csv(&quot;https://github.com/zhamuelh/samprojects2/raw/master/Data%20sets/liverdrecords.csv&quot;)
+
+liverd &lt;- liverd %&gt;% rename(Liver_Disease = Dataset) %&gt;% rename(Total_Proteins = Total_Protiens) %&gt;%
+  mutate(Liver_Disease = ifelse(Liver_Disease == &quot;1&quot;, 1, 0)) %&gt;% na.omit
+
+head(liverd)</code></pre>
+<pre><code>##   Age Gender Total_Bilirubin Direct_Bilirubin Alkaline_Phosphotase
+## 1  65 Female             0.7              0.1                  187
+## 2  62   Male            10.9              5.5                  699
+## 3  62   Male             7.3              4.1                  490
+## 4  58   Male             1.0              0.4                  182
+## 5  72   Male             3.9              2.0                  195
+## 6  46   Male             1.8              0.7                  208
+##   Alamine_Aminotransferase Aspartate_Aminotransferase Total_Proteins Albumin
+## 1                       16                         18            6.8     3.3
+## 2                       64                        100            7.5     3.2
+## 3                       60                         68            7.0     3.3
+## 4                       14                         20            6.8     3.4
+## 5                       27                         59            7.3     2.4
+## 6                       19                         14            7.6     4.4
+##   Albumin_and_Globulin_Ratio Liver_Disease
+## 1                       0.90             1
+## 2                       0.74             1
+## 3                       0.89             1
+## 4                       1.00             1
+## 5                       0.40             1
+## 6                       1.30             1</code></pre>
+<div id="this-data-set-contains-583-observations-with-416-liver-disease-patients-and-167-non-afflicted-patients.-each-numeric-variable-except-for-age-is-a-measurement-relating-to-a-liver-protein-enzyme-etc.-categorical-variables-include-liver-disease-status-and-sex.-liver-patient-records-were-collected-from-north-east-of-andhra-pradesh-india.-the-data-was-obtained-here-however." class="section level4">
+<h4>This data set contains 583 observations with 416 liver disease patients and 167 non-afflicted patients. Each numeric variable (except for age) is a measurement relating to a liver protein, enzyme, etc. Categorical variables include liver disease status and sex. Liver patient records were collected from North East of Andhra Pradesh, India. The data was obtained <a href="https://www.kaggle.com/uciml/indian-liver-patient-records">here</a>, however.</h4>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level2">
+<h2>Hypothesis Testing</h2>
+<pre class="r"><code>man1 &lt;- manova(cbind(Total_Bilirubin, Direct_Bilirubin, Alkaline_Phosphotase, 
+                     Alamine_Aminotransferase, Total_Proteins, Albumin, 
+                     Albumin_and_Globulin_Ratio, Age) ~ Liver_Disease, data = liverd)
+summary(man1)</code></pre>
+<pre><code>##                Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## Liver_Disease   1 0.11601   9.3503      8    570 3.647e-12 ***
+## Residuals     577                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(man1)</code></pre>
+<pre><code>##  Response Total_Bilirubin :
+##                Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1  1087.2 1087.15  29.408 8.633e-08 ***
+## Residuals     577 21330.3   36.97                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Direct_Bilirubin :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1  278.1 278.087  37.255 1.903e-09 ***
+## Residuals     577 4307.0   7.464                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Alkaline_Phosphotase :
+##                Df   Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1  1152846 1152846  20.075 8.982e-06 ***
+## Residuals     577 33135491   57427                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Alamine_Aminotransferase :
+##                Df   Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1   516055  516055  15.772 8.049e-05 ***
+## Residuals     577 18879287   32720                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Total_Proteins :
+##                Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Liver_Disease   1   0.77 0.76831  0.6527 0.4195
+## Residuals     577 679.22 1.17715               
+## 
+##  Response Albumin :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1   9.31  9.3118  15.114 0.0001129 ***
+## Residuals     577 355.48  0.6161                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Albumin_and_Globulin_Ratio :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Liver_Disease   1  1.571 1.57107  15.775 8.037e-05 ***
+## Residuals     577 57.465 0.09959                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Age :
+##                Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+## Liver_Disease   1   2697 2697.09  10.416 0.00132 **
+## Residuals     577 149401  258.93                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Total_Bilirubin, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Total_Bilirubin and liverd$Liver_Disease 
+## 
+##   0      
+## 1 8.6e-08
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Direct_Bilirubin, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Direct_Bilirubin and liverd$Liver_Disease 
+## 
+##   0      
+## 1 1.9e-09
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Alkaline_Phosphotase, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Alkaline_Phosphotase and liverd$Liver_Disease 
+## 
+##   0    
+## 1 9e-06
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Alamine_Aminotransferase, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Alamine_Aminotransferase and liverd$Liver_Disease 
+## 
+##   0    
+## 1 8e-05
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Albumin, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Albumin and liverd$Liver_Disease 
+## 
+##   0      
+## 1 0.00011
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Albumin_and_Globulin_Ratio, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Albumin_and_Globulin_Ratio and liverd$Liver_Disease 
+## 
+##   0    
+## 1 8e-05
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(liverd$Age, liverd$Liver_Disease, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  liverd$Age and liverd$Liver_Disease 
+## 
+##   0     
+## 1 0.0013
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>.05/16 #Bonferroni correction</code></pre>
+<pre><code>## [1] 0.003125</code></pre>
+<div id="in-total-16-tests-were-conducted-1-manova-8-anovas-and-7-post-hoc-t-tests.-after-a-bonferroni-adjustment-the-probability-of-making-a-type-i-error-is-.0031.-a-one-way-manova-was-conducted-to-determine-the-effect-of-liver-disease-status-on-all-of-our-numeric-variables.-significant-differences-were-found-for-liver-disease-status-for-at-least-one-of-our-dependent-variables-f-9.350-p-.0001.-after-running-univariate-anovas-for-each-of-our-dependent-variables-only-total-proteins-was-found-to-not-be-significant-f-0.652-p-0.419.-post-hoc-t-tests-were-calculated-to-determine-if-liver-disease-status-differed-across-our-variables.-liver-disease-onset-and-absence-were-found-to-differ-from-each-other-significantly-in-regards-to-all-the-variables-that-were-tested." class="section level4">
+<h4>In total 16 tests were conducted: 1 MANOVA, 8 ANOVAs, and 7 post-hoc t-tests. After a bonferroni adjustment, the probability of making a type I error is .0031. A one-way MANOVA was conducted to determine the effect of liver disease status on all of our numeric variables. Significant differences were found for liver disease status for at least one of our dependent variables, F = 9.350, p &lt; .0001. After running univariate ANOVAs for each of our dependent variables, only “Total Proteins” was found to not be significant (F = 0.652, p = 0.419). Post-hoc t-tests were calculated to determine if liver disease status differed across our variables. Liver disease onset and absence were found to differ from each other significantly in regards to all the variables that were tested.</h4>
+</div>
+</div>
+<div id="randomization-test" class="section level2">
+<h2>Randomization Test</h2>
+<pre class="r"><code>rand_dist &lt;- vector()
+for(i in 1:5000){
+  new &lt;- data.frame(albumin = sample(liverd$Albumin), liver_disease = liverd$Liver_Disease)
+  rand_dist[i] &lt;- mean(new[new$liver_disease == &quot;1&quot; ,]$albumin) -
+    mean(new[new$liver_disease == &quot;0&quot; ,]$albumin)
+}
+
+liverd %&gt;% group_by(Liver_Disease) %&gt;% summarise(ldmean = mean(Albumin)) %&gt;%
+  summarise(diff_mean = diff(ldmean))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   diff_mean
+##       &lt;dbl&gt;
+## 1    -0.281</code></pre>
+<pre class="r"><code>hist(rand_dist, main = NULL, ylab = NULL) ; abline(v = -0.2809, col = &quot;red&quot;)</code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>mean(rand_dist &gt; .2809 | rand_dist &lt; -.2809)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>t.test(Albumin ~ Liver_Disease, data = liverd)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  Albumin by Liver_Disease
+## t = 3.9067, df = 304.84, p-value = 0.0001153
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.1394315 0.4224481
+## sample estimates:
+## mean in group 0 mean in group 1 
+##        3.339394        3.058454</code></pre>
+<div id="albumin-was-chosen-because-low-levels-of-the-protein-could-indicate-the-onset-of-liver-disease-more-info-can-be-found-here.-the-null-hypothesis-is-that-there-is-no-difference-between-the-means-of-albumin-and-liver-disease-status.-likewise-the-alternative-hypothesis-is-that-there-is-a-difference-between-the-means-of-albumin-and-liver-disease-status.-after-conducting-a-randomization-test-a-p-value-of-0-was-obtained-leading-to-a-rejection-of-the-null-hypothesis-and-further-conclude-that-there-is-a-significant-difference-between-the-true-means-of-albumin-and-liver-disease-status-t-3.907-p-0." class="section level4">
+<h4>Albumin was chosen because low levels of the protein could indicate the onset of liver disease (more info can be found <a href="https://medlineplus.gov/lab-tests/albumin-blood-test/">here</a>). The null hypothesis is that there is no difference between the means of albumin and liver disease status. Likewise, the alternative hypothesis is that there is a difference between the means of albumin and liver disease status. After conducting a randomization test, a p-value of 0 was obtained, leading to a rejection of the null hypothesis and further conclude that there is a significant difference between the true means of albumin and liver disease status (t = 3.907, p = 0).</h4>
+</div>
+</div>
+<div id="linear-regression-model" class="section level2">
+<h2>Linear Regression Model</h2>
+<pre class="r"><code>library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(sandwich)
+
+liverd$DB_c &lt;- liverd$Direct_Bilirubin - mean(liverd$Direct_Bilirubin)
+
+ld_fit &lt;- lm(Albumin ~ DB_c * Liver_Disease, data = liverd)
+summary(ld_fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Albumin ~ DB_c * Liver_Disease, data = liverd)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.19291 -0.49528 -0.04746  0.57218  2.34709 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         3.04414    0.13967  21.795   &lt;2e-16 ***
+## DB_c               -0.26896    0.11497  -2.339   0.0197 *  
+## Liver_Disease       0.03818    0.14478   0.264   0.7921    
+## DB_c:Liver_Disease  0.21441    0.11557   1.855   0.0641 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.7685 on 575 degrees of freedom
+## Multiple R-squared:  0.06915,    Adjusted R-squared:  0.06429 
+## F-statistic: 14.24 on 3 and 575 DF,  p-value: 5.819e-09</code></pre>
+<pre class="r"><code>liverd %&gt;% 
+  ggplot(aes(x = DB_c, y = Albumin, color = factor(Liver_Disease))) +
+  geom_point() +
+  stat_smooth(method = &quot;lm&quot;, se = F, fullrange = T)</code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>plot(ld_fit) #Assumptions Check</code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-4-2.png" width="672" /><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-4-3.png" width="672" /><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-4-4.png" width="672" /><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-4-5.png" width="672" /></p>
+<pre class="r"><code>coeftest(ld_fit, vcov. = vcovHC(ld_fit))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                     Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)         3.044144   0.092244 33.0008 &lt; 2.2e-16 ***
+## DB_c               -0.268956   0.075238 -3.5747 0.0003801 ***
+## Liver_Disease       0.038175   0.099979  0.3818 0.7027252    
+## DB_c:Liver_Disease  0.214409   0.075949  2.8231 0.0049212 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div id="the-predicted-albumin-level-for-a-non-afflicted-patient-with-an-average-direct-bilirubin-level-is-3.044-gdl.-controlling-for-liver-disease-status-for-every-1-mgdl-increase-in-direct-bilirubin-level-albumin-decreases-by-0.269-on-average.-controlling-for-direct-bilirubin-a-patient-with-liver-disease-shows-a-0.038-gdl-increase-in-albumin.-the-slope-for-direct-bilirubin-on-albumin-is-0.214-greater-for-liver-disease-afflicted-patients-than-non-afflicted-patients.after-recomputing-the-regression-with-robust-standard-errors-the-interaction-between-db-and-liver-disease-status-become-significant-p-0.0049.-average-db-also-becomes-more-significant-p-0.00038-compared-to-p-0.0197.-average-db-and-the-interaction-between-average-db-and-liver-disease-status-show-significant-variation-in-albumin-t--3.57-p-0.0003-t-2.82-p-0.0049-respectively." class="section level4">
+<h4>The predicted albumin level for a non-afflicted patient with an average direct bilirubin level is 3.044 g/dL. Controlling for liver disease status, for every 1 mg/dL increase in direct bilirubin level, albumin decreases by 0.269 on average. Controlling for direct bilirubin, a patient with liver disease shows a 0.038 g/dL increase in albumin. The slope for direct bilirubin on albumin is 0.214 greater for liver disease afflicted patients than non-afflicted patients.After recomputing the regression with robust standard errors, the interaction between DB and liver disease status become significant, p = 0.0049. Average DB also becomes “more” significant, p = 0.00038 compared to p = 0.0197. Average DB and the interaction between average DB and liver disease status show significant variation in albumin (t = -3.57, p = 0.0003 &amp; t = 2.82, p = 0.0049 respectively).</h4>
+</div>
+</div>
+<div id="bootstrapping" class="section level2">
+<h2>Bootstrapping</h2>
+<pre class="r"><code>ld_dist &lt;- replicate(5000, {
+  boot_ld &lt;- liverd[sample(nrow(liverd), replace = T),]
+  fit &lt;- lm(Albumin ~ DB_c * Liver_Disease, data = boot_ld)
+  coef(fit)
+})
+
+ld_dist %&gt;% t %&gt;% as.data.frame() %&gt;% summarise_all(sd)</code></pre>
+<pre><code>##   (Intercept)       DB_c Liver_Disease DB_c:Liver_Disease
+## 1   0.1054757 0.08748976     0.1120663         0.08824926</code></pre>
+<div id="after-bootstrapping-standard-errors-there-is-an-increase-in-the-se-values-compared-to-the-robust-ses-that-were-calculated-prior.-however-compared-to-the-original-ses-the-values-of-the-boot-ses-are-lower." class="section level4">
+<h4>After bootstrapping standard errors, there is an increase in the SE values compared to the robust SEs that were calculated prior. However, compared to the original SEs, the values of the boot SEs are lower.</h4>
+</div>
+</div>
+<div id="logistic-regression-and-cross-validation" class="section level2">
+<h2>Logistic Regression and Cross Validation</h2>
+<pre class="r"><code>library(plotROC)
+
+ld_fit2 &lt;- glm(Liver_Disease ~ Albumin + Alkaline_Phosphotase, data = liverd,family = &quot;binomial&quot;)
+summary(ld_fit2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Liver_Disease ~ Albumin + Alkaline_Phosphotase, 
+##     family = &quot;binomial&quot;, data = liverd)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.3950  -1.3050   0.6972   0.8746   1.1590  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)           1.2578707  0.4720395   2.665  0.00770 ** 
+## Albumin              -0.3738801  0.1229782  -3.040  0.00236 ** 
+## Alkaline_Phosphotase  0.0033936  0.0008688   3.906 9.38e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 692.01  on 578  degrees of freedom
+## Residual deviance: 651.99  on 576  degrees of freedom
+## AIC: 657.99
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>#Confusion Matrix
+ld_prob &lt;- predict(ld_fit2, type = &quot;response&quot;)
+table(predict = as.numeric(ld_prob &gt; .5), truth = liverd$Liver_Disease) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0     1   0   1
+##     1   164 414 578
+##     Sum 165 414 579</code></pre>
+<pre class="r"><code>liverd$logit &lt;- predict(ld_fit2, type = &quot;link&quot;)
+
+#AUC plot
+liverd %&gt;%
+  ggplot() +
+  geom_density(aes(logit, color = factor(Liver_Disease), fill = factor(Liver_Disease)), alpha = 0.5) +
+  geom_vline(xintercept = 0) +
+  xlab(&quot;log-odds&quot;) + 
+  geom_rug(aes(logit, color = factor(Liver_Disease)))</code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>#ROC curve  
+ld_ROC &lt;- liverd %&gt;% 
+  ggplot() +
+  geom_roc(aes(d = Liver_Disease, m = ld_prob), n.cuts = 0)
+ld_ROC</code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ld_ROC)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.6737374</code></pre>
+<pre class="r"><code>#10-Fold Cross Validation
+k = 10
+
+ld_cv &lt;- liverd[sample(nrow(liverd)),]
+folds &lt;- cut(seq(1:nrow(liverd)), breaks = k, labels = F)
+
+diags &lt;- NULL
+for(i in 1:k){
+  train &lt;- ld_cv[folds != i,]
+  test &lt;- ld_cv[folds == i,]
+  truth &lt;- test$Liver_Disease
+  
+  cvfit &lt;- glm(Liver_Disease ~ Albumin + Alkaline_Phosphotase, data = train, family = &quot;binomial&quot;)
+  probs &lt;- predict(cvfit, newdata = test, type = &quot;response&quot;)
+  diags &lt;- rbind(diags, class_diag(probs, truth)) #class_diag for convenience 
+}
+
+summarise_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens       spec       ppv       auc
+## 1 0.7167877 0.9976744 0.01428571 0.7173192 0.6689027</code></pre>
+<pre class="r"><code>yhat &lt;- predict(cvfit)
+mean((liverd$Liver_Disease - yhat)^2)</code></pre>
+<pre><code>## Warning in liverd$Liver_Disease - yhat: longer object length is not a multiple
+## of shorter object length</code></pre>
+<pre><code>## [1] 1.730677</code></pre>
+<div id="controlling-for-alkaline-phosphotase-albumin-has-a-significant-negative-impact-on-the-odds-of-liver-disease-onset.-controlling-for-albumin-alkaline-phosphotase-has-a-significant-positive-impact-on-the-odds-of-liver-disease-onset.-after-computing-a-confusion-matrix-the-sensitivity-for-the-model-is-0.716-and-the-specificity-is-a-value-of-1.-calculating-the-auc-gives-a-value-of-0.674-which-tells-us-that-the-model-is-a-poor-at-classifying-patients-with-liver-disease-and-those-without.-by-performing-10-fold-cross-validation-on-the-model-there-is-a-very-miniscule-increase-in-auc-0.676." class="section level4">
+<h4>Controlling for alkaline phosphotase, albumin has a significant negative impact on the odds of liver disease onset. Controlling for albumin, alkaline phosphotase has a significant positive impact on the odds of liver disease onset. After computing a confusion matrix, the sensitivity for the model is 0.716 and the specificity is a value of 1. Calculating the AUC gives a value of 0.674, which tells us that the model is a poor at classifying patients with liver disease and those without. By performing 10-fold cross validation on the model, there is a very miniscule increase in auc (=0.676).</h4>
+</div>
+</div>
+<div id="lasso" class="section level2">
+<h2>LASSO</h2>
+<pre class="r"><code>library(glmnet)</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loaded glmnet 3.0-2</code></pre>
+<pre class="r"><code>liverd$LD_n &lt;- liverd$Liver_Disease %&gt;% as.numeric #code for orignial LD_n was lost, here for knit
+
+y &lt;- as.matrix(liverd$Liver_Disease)
+x &lt;- liverd %&gt;% dplyr::select(-Liver_Disease, -Gender, -DB_c, -LD_n, -logit) %&gt;% mutate_all(scale) %&gt;% as.matrix
+
+cv &lt;- cv.glmnet(x,y)
+plot(cv$glmnet.fit, &quot;lambda&quot;, label = T) ; abline(v = log(cv$lambda.1se)) #Plot looks cool </code></pre>
+<p><img src="/CBIO-Project2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>lasso1 &lt;- glmnet(x, y, lambda = cv$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 10 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                      s0
+## (Intercept)                 0.715025907
+## Age                         0.027400597
+## Total_Bilirubin             .          
+## Direct_Bilirubin            0.065202522
+## Alkaline_Phosphotase        0.029444612
+## Alamine_Aminotransferase    0.029461065
+## Aspartate_Aminotransferase  .          
+## Total_Proteins              .          
+## Albumin                    -0.005590236
+## Albumin_and_Globulin_Ratio -0.016342040</code></pre>
+<pre class="r"><code>#LASSO Assisted 10-Fold CV
+k = 10
+
+ld_cv2 &lt;- liverd[sample(nrow(liverd)),]
+folds2 &lt;- cut(seq(1:nrow(liverd)), breaks = k, labels = F)
+
+diags2 &lt;- NULL
+for(i in 1:k){
+  train2 &lt;- ld_cv[folds != i,]
+  test2 &lt;- ld_cv[folds == i,]
+  truth2 &lt;- test2$Liver_Disease
+  
+  cvfit2 &lt;- glm(Liver_Disease ~ Albumin + Alkaline_Phosphotase + Age +
+                  Direct_Bilirubin + Alamine_Aminotransferase +
+                  Albumin_and_Globulin_Ratio, data = train2, family = &quot;binomial&quot;)
+  probs2 &lt;- predict(cvfit, newdata = test2, type = &quot;response&quot;)
+  diags2 &lt;- rbind(diags, class_diag(probs2, truth2)) #class_diag for convenience 
+}</code></pre>
+<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+<pre class="r"><code>summarise_all(diags2, mean)</code></pre>
+<pre><code>##         acc      sens       spec       ppv       auc
+## 1 0.7127537 0.9978858 0.01298701 0.7132369 0.6674726</code></pre>
+<pre class="r"><code>yhat2 &lt;- predict(cvfit2)
+mean((liverd$Liver_Disease - yhat2)^2)</code></pre>
+<pre><code>## Warning in liverd$Liver_Disease - yhat2: longer object length is not a multiple
+## of shorter object length</code></pre>
+<pre><code>## [1] 10.92317</code></pre>
+<div id="after-performing-a-lasso-on-the-data-the-variables-age-direct-bilirubin-alkaline-phosphotase-alamine-aminotransferase-albumin-and-albuminglobulin-ratio-are-retained.-the-mean-squared-error-is-a-value-of-12.107-which-is-larger-than-the-mean-squared-error-that-was-obtained-prior-1.123." class="section level4">
+<h4>After performing a LASSO on the data, the variables age, direct bilirubin, alkaline phosphotase, alamine aminotransferase, albumin, and albumin/globulin ratio are retained. The mean-squared error is a value of 12.107, which is larger than the mean-squared error that was obtained prior (1.123).</h4>
+</div>
+</div>
