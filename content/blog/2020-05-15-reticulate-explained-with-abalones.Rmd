@@ -1,0 +1,44 @@
+---
+title: Reticulate Explained With Abalones
+author: Samuel Higgins
+date: '2020-05-15'
+slug: reticulate-explained-with-abalones
+categories: []
+tags: []
+description: ''
+---
+
+```{R}
+library(reticulate)
+py_config()
+Sys.setenv(Reticulate_Python = "C:/Users/shigg/AppData/Local/r-miniconda/envs/r-reticulate/python.exe")
+use_python("C:/Users/shigg/AppData/Local/r-miniconda/envs/r-reticulate/python.exe")
+
+conda_create("r-reticulate")
+use_condaenv("r-reticulate")
+py_install("pandas")
+```
+
+#### 'Reticulate' is an R package that allows you to call python from R. Doing so will allow you to work with R and python interchangeably within RStudio's R Markdown feature. 
+
+```{python}
+import pandas as pd
+ab = pd.read_csv(r'\Users\shigg\OneDrive\Documents\College Notes\PyRe\Data sets\abalone_original.csv')
+ab = ab[['sex','rings']]
+print(ab)
+```
+
+#### The chunk above is an example of a python chunk, and as you can see, is written in python syntax. Here, I import pandas from python and read in data set that contains the features and measurements of a sample of abalones (sea snails basically).
+
+#### The chunk below is an R chunk. You may notice that there's a 'py$' in front of the variable we created above in the python chunk. In an R chunk, you can call variables created in a python chunk with py$ before the variable. Likewise, if you want to call a variable created in a R chunk into a python chunk, then the syntax would be 'r.' before the variable (for example, r.ab). 
+
+```{R}
+library(tidyverse)
+
+ggplot(py$ab, aes(x = sex, y = rings, fill = sex)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Dark2")
+
+``` 
+
+![](/blog/2020-05-15-reticulate-explained-with-abalones_files/abalone.jpg)
