@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Samuel Higgins" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Reticulate Explained With Abalones</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/blog/reticulate-explained-with-abalones/">Reticulate Explained With Abalones</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          May 15, 2020
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<pre class="r"><code>library(reticulate)
+Sys.setenv(Reticulate_Python = &quot;C:/Users/shigg/AppData/Local/r-miniconda/envs/r-reticulate/python.exe&quot;)
+use_python(&quot;C:/Users/shigg/AppData/Local/r-miniconda/envs/r-reticulate/python.exe&quot;)
+
+conda_create(&quot;r-reticulate&quot;)</code></pre>
+<pre><code>## [1] &quot;C:\\Users\\shigg\\AppData\\Local\\r-miniconda\\envs\\r-reticulate\\python.exe&quot;</code></pre>
+<pre class="r"><code>use_condaenv(&quot;r-reticulate&quot;)
+py_install(&quot;pandas&quot;)</code></pre>
+<div id="reticulate-is-an-r-package-that-allows-you-to-call-python-from-r.-doing-so-will-allow-you-to-work-with-r-and-python-interchangeably-within-rstudios-r-markdown-feature." class="section level4">
+<h4>‘Reticulate’ is an R package that allows you to call python from R. Doing so will allow you to work with R and python interchangeably within RStudio’s R Markdown feature.</h4>
+<pre class="python"><code>import pandas as pd
+ab = pd.read_csv(r&#39;\Users\shigg\OneDrive\Documents\College Notes\PyRe\Data sets\abalone_original.csv&#39;)
+ab = ab[[&#39;sex&#39;,&#39;rings&#39;]]
+print(ab)</code></pre>
+<pre><code>##      sex  rings
+## 0      M     15
+## 1      M      7
+## 2      F      9
+## 3      M     10
+## 4      I      7
+## ...   ..    ...
+## 4172   F     11
+## 4173   M     10
+## 4174   M      9
+## 4175   F     10
+## 4176   M     12
+## 
+## [4177 rows x 2 columns]</code></pre>
+</div>
+<div id="the-chunk-above-is-an-example-of-a-python-chunk-and-as-you-can-see-is-written-in-python-syntax.-here-i-import-pandas-from-python-and-read-in-data-set-that-contains-the-features-and-measurements-of-a-sample-of-abalones-sea-snails-basically." class="section level4">
+<h4>The chunk above is an example of a python chunk, and as you can see, is written in python syntax. Here, I import pandas from python and read in data set that contains the features and measurements of a sample of abalones (sea snails basically).</h4>
+</div>
+<div id="the-chunk-below-is-an-r-chunk.-you-may-notice-that-theres-a-py-in-front-of-the-variable-we-created-above-in-the-python-chunk.-in-an-r-chunk-you-can-call-variables-created-in-a-python-chunk-with-py-before-the-variable.-likewise-if-you-want-to-call-a-variable-created-in-a-r-chunk-into-a-python-chunk-then-the-syntax-would-be-r.-before-the-variable-for-example-r.ab." class="section level4">
+<h4>The chunk below is an R chunk. You may notice that there’s a ‘py<span class="math inline">\(&#39; in front of the variable we created above in the python chunk. In an R chunk, you can call variables created in a python chunk with py\)</span> before the variable. Likewise, if you want to call a variable created in a R chunk into a python chunk, then the syntax would be ’r.’ before the variable (for example, r.ab).</h4>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.2.1     v purrr   0.3.3
+## v tibble  2.1.3     v dplyr   0.8.3
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>ggplot(py$ab, aes(x = sex, y = rings, fill = sex)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = &quot;Dark2&quot;)</code></pre>
+<p><img src="/blog/2020-05-15-reticulate-explained-with-abalones_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/blog/2020-05-15-reticulate-explained-with-abalones_files/abalone.jpg" /></p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
